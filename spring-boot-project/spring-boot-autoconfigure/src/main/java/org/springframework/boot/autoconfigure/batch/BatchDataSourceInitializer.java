@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2019 the original author or authors.
+ * Copyright 2012-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,17 +29,17 @@ import org.springframework.util.Assert;
  *
  * @author Dave Syer
  * @author Vedran Pavic
- * @author Mukul Kumar Chaundhyan
  * @since 1.0.0
  */
 public class BatchDataSourceInitializer extends AbstractDataSourceInitializer {
 
 	private final Jdbc jdbcProperties;
 
-	public BatchDataSourceInitializer(DataSource dataSource, ResourceLoader resourceLoader, Jdbc jdbcProperties) {
+	public BatchDataSourceInitializer(DataSource dataSource, ResourceLoader resourceLoader,
+			BatchProperties properties) {
 		super(dataSource, resourceLoader);
-		Assert.notNull(jdbcProperties, "Jdbc Batch Properties must not be null");
-		this.jdbcProperties = jdbcProperties;
+		Assert.notNull(properties, "BatchProperties must not be null");
+		this.jdbcProperties = properties.getJdbc();
 	}
 
 	@Override
@@ -57,6 +57,9 @@ public class BatchDataSourceInitializer extends AbstractDataSourceInitializer {
 		String databaseName = super.getDatabaseName();
 		if ("oracle".equals(databaseName)) {
 			return "oracle10g";
+		}
+		if ("mariadb".equals(databaseName)) {
+			return "mysql";
 		}
 		return databaseName;
 	}
